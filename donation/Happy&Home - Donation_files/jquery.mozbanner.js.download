@@ -1,0 +1,435 @@
+(function (window, $) {
+
+    /* Plugin Constructor */
+
+    var MozBanner = function (element, options) {
+        this.element = $(element);
+        this.options = options;
+    };
+
+    /* Plugin Prototype */
+
+    MozBanner.prototype = {
+
+        /**
+         * Initializes the Plugin.
+         */
+
+        init: function ()
+        {
+            var base = this;
+
+            base.componentID = $(base.element).attr('data-cid');
+            base.currPic = 0;
+            base.fadeInSpeed = 1000;
+            base.fadeOutSpeed = 1000;
+            base.multi = $(base.element).attr('data-multi');
+
+            if (typeof base.multi == 'undefined') {
+                base.multi = 1;
+            }
+
+            // Sets the initial picture.
+
+            $(base.element).find('.moze-banner').hide();
+            base.actionBannerGoTo(0);
+
+            // Pre-loads pictures.
+
+            base.preloader = setInterval(function () {
+                base.preloadPics();
+            }, 250);
+
+            // Updates buttons.
+
+            base.initButtons();
+        },
+
+        /**
+         * Initializes button actions.
+         */
+        initButtons: function ()
+        {
+            var base = this;
+            var pics = $(base.element).find('.moze-banner.slide');
+            var is_behind = ($(base.element).parents('.is_behind').length > 0);
+            var toolbar = $(base.element);
+
+            if (is_behind && ($('.mz_floating_bar').length > 0)) {
+                toolbar = $('.mz_floating_bar');
+            }
+
+            // Hides all buttons.
+
+            toolbar
+                .find('a.moze-banner-slide-left, a.moze-banner-slide-right')
+                .unbind().hide();
+
+            toolbar
+                .find('a.moze-banner-add, a.moze-banner-position, a.moze-banner-delete, a.moze-banner-reset')
+                .unbind().hide().removeClass('visible last-visible first-visible pencil');
+
+            // Left & right buttons.
+
+            if (base.multi == 1 && pics.length > 1) {
+
+                toolbar
+                    .find('a.moze-banner-slide-left')
+                    .show()
+                    .click(function () {
+                        base.actionBannerGoTo(base.currPic - 1);
+                    });
+
+                toolbar
+                    .find('a.moze-banner-slide-right')
+                    .show()
+                    .click(function () {
+                        base.actionBannerGoTo(base.currPic + 1);
+                    });
+            }
+
+            // Add button.
+
+            if (base.multi == 1 || pics.length < 1) {
+
+                toolbar
+                    .find('a.moze-banner-add')
+                    .addClass('visible')
+                    .show()
+                    .click(function () {
+                        base.actionBannerAdd();
+                    });
+
+                if (pics.length == 0) {
+                    toolbar
+                        .find('a.moze-banner-add')
+                        .addClass('pencil');
+                }
+
+            }
+
+            // Position & delete button.
+
+            if (pics.length > 0)
+            {
+                toolbar
+                    .find('a.moze-banner-position')
+                    .addClass('visible')
+                    .show()
+                    .click(function() {
+                        base.actionBannerPosition();
+                    });
+
+                toolbar
+                    .find('a.moze-banner-delete')
+                    .addClass('visible')
+                    .show()
+                    .click(function () {
+                        base.actionBannerDelete();
+                    });
+            }
+
+            // Reset button
+
+            if (pics.length > 1) {
+                toolbar
+                    .find('a.moze-banner-reset')
+                    .addClass('visible')
+                    .show()
+                    .click(function () {
+                        base.actionBannerReset();
+                    });
+            }
+
+            toolbar.find('a.visible').first().addClass('first-visible');
+            toolbar.find('a.visible').last().addClass('last-visible');
+        },
+
+        /**
+         * Pre-loads banner pictures.
+         */
+        preloadPics: function ()
+        {
+            var base = this;
+            var pic = $(base.element).find('.moze-banner.slide[data-pic]').first();
+
+            if (pic.length > 0) {
+
+                var picSrc = pic.attr('data-pic');
+
+                var image = new Image();
+                image.src = picSrc;
+
+                pic
+                    .removeAttr('data-pic')
+                    .css('background-image', 'url("' + image.src + '")');
+            }
+            else {
+                clearInterval(base.preloader);
+            }
+        },
+
+        /**
+         * Slides in the specified slide.
+         */
+        actionBannerGoTo: function (i)
+        {
+            var base = this;
+            var pics = $(base.element).find('.moze-banner.slide');
+
+            if (pics.length == 0) {
+
+                $(base.element).find('.moze-banner.default').show().css('display', 'block');
+                base.currPic = 0;
+                base.initButtons();
+                return;
+            }
+            else {
+                $(base.element).find('.moze-banner.default').hide();
+            }
+
+            if (i > pics.length - 1) {
+                i = 0;
+            }
+            if (i < 0) {
+                i = pics.length - 1;
+            }
+
+            $(pics[base.currPic]).fadeOut(base.fadeOutSpeed);
+            $(pics[i]).fadeIn(base.fadeInSpeed);
+
+            base.currPic = i;
+        },
+
+        /**
+         * Adds a new slide.
+         */
+        actionBannerAdd: function ()
+        {
+            var base = this;
+
+            if (!window.FileReader) {
+                alert(MGA_ERROR_UNSUPPOTED_FEATURE);
+                return false;
+            }
+
+            $(base.element)
+                .find('input[name="banner-upload"]')
+                .unbind()
+                .change(function (e) {
+
+                    var files = e.target.files;
+                    var totalFiles = e.target.files.length;
+
+                    var uploadFx = function (fileNo)
+                    {
+                        if (fileNo > totalFiles) {
+                            return;
+                        }
+
+                        var file = files[fileNo];
+
+                        if (file.type == 'image/jpeg' || file.type == 'image/png') {
+
+                            var reader = new FileReader();
+                            reader.readAsDataURL(file);
+
+                            reader.onloadstart = function () {
+                                $('#upload-progress').removeClass('failed');
+                                $('#upload-status').css("display", "block");
+                                $('#upload-status-message').html(MGA_STATUS_UPLOADING);
+                            };
+
+                            reader.onload = function () {
+
+                                var formData = new FormData();
+                                formData.append('Filedata', file);
+                                formData.append('component', base.componentID);
+
+                                $.ajax({
+                                    url: '/m/banner-upload-do/',
+                                    type: 'post',
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    xhr: function () {
+
+                                        var req = $.ajaxSettings.xhr();
+
+                                        if (req) {
+
+                                            req.upload.addEventListener('progress', function (e) {
+
+                                                if (e.lengthComputable) {
+
+                                                    var progress = Math.round(e.loaded / e.total * 100);
+                                                    var message = '';
+                                                    if (totalFiles == 1) {
+                                                        message = MGA_STATUS_FILE_UPLOAD_PROGRESS;
+                                                    }
+                                                    else {
+                                                        message = MGA_STATUS_FILES_UPLOAD_PROGRESS;
+                                                        message = message.replace('{0}', (fileNo + 1).toString());
+                                                        message = message.replace('{1}', totalFiles.toString());
+                                                    }
+
+                                                    var progressWidth = ((100 / totalFiles) * fileNo + (100 / totalFiles) / 100 * progress).toString() + '%';
+                                                    $('#upload-status').css('display', 'block');
+                                                    $('#upload-progress').css('width', progressWidth);
+                                                    $('#upload-status-message').html(message);
+                                                }
+                                            }, false);
+                                        }
+                                        return req;
+                                    },
+                                    error: function (xhr, status, error) {
+                                        fileuploadOnError(error);
+                                    },
+                                    success: function (json) {
+
+                                        var data = null;
+                                        try {
+                                            data = $.parseJSON(json);
+                                        } catch (e) {
+
+                                        }
+
+                                        if (data != null) {
+
+                                            var picDiv = $('<div>')
+                                                .addClass('moze-banner')
+                                                .addClass('slide')
+                                                .css('background-image', 'url("' + data.pic + '")')
+                                                .css('display', 'none')
+                                                .data('pid', data.pid);
+
+                                            $(base.element).find('.moze-banner').last().after(picDiv);
+                                            base.actionBannerGoTo($(base.element).find('.moze-banner.slide').length - 1);
+                                        }
+
+                                        base.initButtons();
+                                        $('#upload-status').css('display', 'none');
+                                    }
+
+                                });
+                            };
+
+                            reader.onerror = function () {
+                                $('#upload-progress').removeClass('failed');
+                                $('#upload-status').css('display', 'block');
+                                $('#upload-status-message').html(MGA_STATUS_QUEUE_ERROR);
+                            };
+                        }
+                    }
+
+                    if (totalFiles > 0) {
+                        uploadFx(0);
+                    }
+                })
+                .trigger('click');
+        },
+
+        /**
+         * Positions the current slide.
+         */
+        actionBannerPosition: function()
+        {
+            var base = this;
+            var pics = $(base.element).find('.moze-banner.slide');
+
+            if (pics.length > 0) {
+                var currPic = pics.eq(base.currPic).first();
+                $.smartModalWindow({
+                    href: '/m/banner-position/params/banner/' + currPic.data('pid') + '/',
+                    fullscreen: true,
+                    onComplete: function() {
+                        var contents = $('#modal-iframe').contents();
+                        contents.find('#closeBannerPositionBtn').off().on('click', function() {
+                            var bgPosX = contents.find('input[name="bgPosX"]').val(),
+                                bgPosY = contents.find('input[name="bgPosY"]').val();
+                            currPic.css('background-position', bgPosX + '% ' + bgPosY + '%');
+                            $.smartModalWindow().close();
+                        });
+                    }
+                });
+            }
+        },
+
+        /**
+         * Deletes the current slide.
+         */
+        actionBannerDelete: function ()
+        {
+            var base = this;
+            var pics = $(base.element).find('.moze-banner.slide');
+
+            if (pics.length > 0)
+            {
+                var currPic = pics.eq(base.currPic).first();
+
+                $.ajax({
+                    url: '/m/banner-delete-do/',
+                    type: 'post',
+                    data: {
+                        component: base.componentID,
+                        pic: currPic.data('pid')
+                    },
+                    success: function (response) {
+                        if (response == 'Ok') {
+                            currPic.remove();
+                            base.actionBannerGoTo(base.currPic);
+                            $(base.element).find('input[name="banner-upload"]').val('');
+                        }
+                    }
+                });
+            }
+
+            base.initButtons();
+        },
+
+        /**
+         * Resets the banner.
+         */
+        actionBannerReset: function ()
+        {
+            var base = this;
+
+            $.ajax({
+                url: '/m/banner-reset-do/',
+                type: 'post',
+                data: {
+                    component: base.componentID,
+                },
+                success: function (response) {
+
+                    if (response == 'Ok') {
+                        $(base.element)
+                            .find('.moze-banner.slide')
+                            .remove();
+                        base.actionBannerGoTo(0);
+                        $(base.element).find('input[name="banner-upload"]').val('');
+                    }
+
+                }
+            });
+
+            base.initButtons();
+        }
+    };
+
+    /* Main Entry Point */
+
+    $.fn.mozbanner = function (options) {
+        return this.each(function () {
+            new MozBanner(this, options).init();
+        });
+    };
+
+    /* End */
+
+})(window, jQuery);
+
+jQuery.mozbannerinit = function() {
+    $('.mz_banner').mozbanner({ });
+    $('.is_behind .mz_overlay_bar').addClass('mz_floating_bar').appendTo('body');
+};

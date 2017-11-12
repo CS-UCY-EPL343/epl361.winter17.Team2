@@ -1,0 +1,310 @@
+/*** editable ***/
+
+body {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: #5E6568;
+    font-weight: 300;
+}
+
+/* general content areas */
+
+.mz_editable {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: #5E6568;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+
+/* font size classes for editable content */
+
+.mz_editable .moze-tiny       { font-size: 11px; }
+.mz_editable .moze-small      { font-size: 13px; }
+.mz_editable .moze-normal     { font-size: 15px; }
+.mz_editable .moze-large      { font-size: 16px; }
+.mz_editable .moze-huge       { font-size: 17px; }
+.mz_editable .moze-gigantic   { font-size: 21px; }
+
+/* alignment classes for editable content */
+
+.mz_editable .moze-left    { text-align: left; }
+.mz_editable .moze-center  { text-align: center; }
+.mz_editable .moze-right   { text-align: right; }
+.mz_editable .moze-justify { text-align: justify; }
+
+/* hyperlinks */
+
+a, .mz_editable a {
+    color: #36C1A3;
+    text-decoration: none;
+}
+
+a:hover, .mz_editable a:hover {
+    color: #A0A0A0;
+}
+
+.sidebox a, .sidebox.mz_editable a {
+    color: #B6F6E8;
+}
+
+.sidebox a:hover, .sidebox.mz_editable a:hover {
+    color: #FFFFFF;
+}
+
+/* bullet list in editable text */
+
+.mz_editable ul li {
+    list-style-type: square;
+}
+
+/* headings in editable text */
+
+.mz_editable h1, .mz_editable h1.moze-megatitle {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 2.63rem;
+    color: #2c3e50;
+    margin-top: 0px;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+}
+
+.moze-megatitle {
+    font-size: 2.81rem !important;
+}
+
+.mz_editable h2, .sidebox h2 {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 1.88rem;
+    color: #2c3e50;
+    font-weight: 500;
+    margin-bottom: 1.13rem;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+}
+
+#sidebar .sidebox h2 {
+    font-size: 1.56rem;
+    line-height: 1.5;
+    color: #FFFFFF
+}
+
+.mz_editable h2:first-child, .sidebox h2 {
+    margin-top: 0px;
+}
+
+.mz_editable h3 {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 1.31rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* special text styles */
+
+.mz_editable .moze-important {
+    background-color: #FFFFCC;
+}
+
+.sidebox .moze-important {
+    color: #5E6568;
+}
+
+.mz_editable .moze-secondary {
+    color: #A0A0A0;
+    font-size: 90%;
+}
+
+.mz_editable .moze-blockquote {
+    font-style: italic;
+    display: block;
+    margin: 16px 0px 16px 20px;
+    border-left: 3px solid #F0F0F0;
+    padding: 10px;
+    color: #6A7D8A;
+    background-color: #F6F6F6
+}
+
+.mz_editable .moze-code {
+    font-family: 'Courier New', Courier, monospace;
+    display: block;
+    line-height: 1.4;
+    padding: 5px;
+    background-color: #F6F6F6;
+    margin: 16px 0px 16px 0px;
+    color: #5E6568
+}
+
+/* user inserted pictures */
+
+.mz_editable img {
+
+}
+
+/* tables */
+
+.mz_editable table {
+    border-spacing: 1px;
+    border-collapse: collapse;
+    background-color: #FFFFFF
+}
+.mz_editable td {
+    padding: 7px;
+    margin: 0px;
+    border-bottom: 1px solid #DDDDDD;
+}
+.mz_editable .moze-th {
+    padding: 8px 7px;
+    background-color: #F4F4F4;
+    font-weight: normal;
+    border-bottom: none;
+}
+
+/* image galleries */
+
+ul.moze-gallery li {
+    background-color: #36C1A3;
+}
+
+/* webforms */
+
+.moze-form {
+    margin: 19px 0px;
+}
+
+.moze-form label {
+    display: inline-block;
+    margin: 0px 0px 4px 0px;
+    font-weight: bold;
+}
+
+.moze-form input,
+.moze-form select,
+.moze-form textarea {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    border: 1px solid #DDDDDD;
+    padding: 6px;
+    margin: 0px 0px 16px 0px;
+    color: #56646F;
+    font-weight: 300;
+}
+
+.moze-form .moze-formbutton {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: #FFFFFF;
+    background-color: #36C1A3;
+    margin: 16px 0px 0px 0px;
+    border: none;
+    padding: 12px 17px;
+    font-weight: normal
+}
+
+.moze-form .moze-formbutton:hover {
+    background-color: #60D2B9;
+}
+
+/* invalid input style */
+
+.moze-form .moze-formerror {
+    border: 1px solid #CC3333;
+}
+
+/* blog and articles */
+
+.mz_editable .moze-postdetails span {
+    font-size: 16px;
+    display: inline-block;
+}
+
+.mz_editable .moze-postdetails,
+.mz_editable .moze-postdetails a {
+    color: #A0A0A0;
+    text-decoration: none;
+    margin-bottom: 30px;
+    font-weight: 300;
+}
+
+.mz_editable .moze-comment {
+    padding: 20px;
+    margin-bottom: 27px;
+    background-color: #F7F7F7
+}
+
+.mz_editable .moze-comment div {
+    margin-bottom: 5px;
+}
+
+.mz_editable .moze-comment div:last-child {
+    margin-bottom: 0px;
+}
+
+.mz_editable h2 span#comments {
+    color: #56646F;
+}
+
+.moze-button,
+.moze-button-large,
+.moze-button *,
+.moze-button-large * {
+    color: #FFFFFF !important;
+    text-decoration: none;
+}
+
+.moze-button, .moze-button-large {
+    display: inline-block;
+    padding: 7px 12px;
+    background-color: #36C1A3;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+}
+
+#sidebar .moze-button, #sidebar .moze-button-large {
+    background-color: #F0F0F0;
+    color: #5E6568 !important;
+}
+
+.moze-button:hover, .moze-button-large:hover {
+    background-color: #60D2B9;
+}
+
+.moze-button-large  {
+    font-size: 16px;
+    padding: 12px 17px;
+}
+
+.mz_editable hr.moze-more-divider {
+    display: none;
+}
+
+/* list of recent blog posts */
+
+.mz_recentposts a {
+    text-decoration: none;
+    margin-bottom: 3px;
+    display: inline-block;
+    color: #FFFFFF;
+}
+
+.mz_recentposts a:hover {
+    color: #C7E5DF;
+}
+
+.mz_recentposts ul {
+    padding: 0;
+    margin-bottom: 23px;
+}
+
+.mz_recentposts ul li {
+    list-style: none;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.mz_recentposts ul li span {
+    color: #C7E5DF;
+    font-size: 13px
+}
